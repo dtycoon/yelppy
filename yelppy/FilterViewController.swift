@@ -8,10 +8,16 @@
 
 import UIKit
 
+protocol FilterViewControllerDelegate {
+    func searchTermDidChange (searchdata:NSDictionary)
+}
+
 class FilterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     
+    
+    var delegate: FilterViewControllerDelegate!
     var categories: [NSDictionary]  =
     [
         [
@@ -155,6 +161,9 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50.0
+    }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
@@ -188,10 +197,7 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
         
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 10
-    }
-    
+
 
     func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         
@@ -240,7 +246,7 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
         }else if (section == 4) {
             self.categoriesStates[row] = !(self.categoriesStates[row])
         }
-        
+        self.tableView.reloadData()
     }
     @IBAction func onTapBack(sender: UIButton) {
         println("onTapBack received")

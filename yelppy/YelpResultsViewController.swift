@@ -25,7 +25,7 @@ class SearchResult {
     var neighborhood: String! }
 
 
- class YelpResultsViewController: UIViewController,  UITableViewDelegate,  UITableViewDataSource, UISearchDisplayDelegate, UISearchBarDelegate     {
+ class YelpResultsViewController: UIViewController,  UITableViewDelegate,  UITableViewDataSource, UISearchDisplayDelegate, UISearchBarDelegate, FilterViewControllerDelegate     {
 
     @IBOutlet weak var tableView: UITableView!
     var client: YelpClient!
@@ -63,6 +63,7 @@ class SearchResult {
     @IBAction func onTap(sender: AnyObject) {
     println(" onTap ")
             view.endEditing(true)
+        searchBar.resignFirstResponder()
     }
     
     
@@ -205,6 +206,15 @@ func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSInd
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        var filtersNavigationController = segue.destinationViewController as UINavigationController
+        
+        var filterviewController = filtersNavigationController.viewControllers[0] as FilterViewController
+        filterviewController.delegate = self
+    }
     
+    func searchTermDidChange (searchData:NSDictionary) {
+        self.loadSearchResults("Thai")
+    }
 
 }
