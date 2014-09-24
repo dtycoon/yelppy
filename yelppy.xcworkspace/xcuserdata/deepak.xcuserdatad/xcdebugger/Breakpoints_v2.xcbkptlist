@@ -14,9 +14,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "312"
-            endingLineNumber = "312"
-            landmarkName = "saveFilters()"
-            landmarkType = "5">
+            endingLineNumber = "312">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
