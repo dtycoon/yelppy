@@ -165,12 +165,11 @@ class YelpResultsViewController: UIViewController,  UITableViewDelegate,  UITabl
         var cell = tableView.dequeueReusableCellWithIdentifier("YelpTableViewCell") as YelpTableViewCell
         var yelpListing = yelpDict[indexPath.row]
         
-        
         var reviewCount = yelpListing["review_count"] as Int
         
         if((yelpListing["name"] as? String) != nil)
         {
-            cell.businessName.text = yelpListing["name"] as? String
+            cell.businessName.text = ("\(indexPath.row + 1). ") + (yelpListing["name"] as? String)!
         }
         
         var yelpRatingImage = yelpListing["rating_img_url"] as String
