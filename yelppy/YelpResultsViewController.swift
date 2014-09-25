@@ -37,16 +37,17 @@ class SearchResult {
     let yelpToken = "7vXjwNpUGizQM1cKqvgvhgokCFtj8v5r"
     let yelpTokenSecret = "qJ-5FANUU0d8y_82gqLyg15rjwI"
     
+    var yelpFilterParameters:NSMutableDictionary = ["location": "San Francisco"]
     var yelpDict: [NSDictionary] = []
     var searchActive:Bool = false
     var searchQuery:NSString!
     
-    func loadSearchResults(searchValue:String)
+    func loadSearchResults()
     {
         
         client = YelpClient(consumerKey: yelpConsumerKey, consumerSecret: yelpConsumerSecret, accessToken: yelpToken, accessSecret: yelpTokenSecret)
         
-        client.searchWithTerm(searchValue, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+        client.searchWild(yelpFilterParameters, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             println(response)
             
             self.yelpDict = response["businesses"] as [NSDictionary]
@@ -62,8 +63,8 @@ class SearchResult {
     
     @IBAction func onTap(sender: AnyObject) {
     println(" onTap ")
-            view.endEditing(true)
-        searchBar.resignFirstResponder()
+        //    view.endEditing(true)
+        self.searchBar.resignFirstResponder()
     }
     
     
@@ -85,7 +86,8 @@ class SearchResult {
         self.navigationItem.titleView = self.searchBar!
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "searchQuery:", name: "yelpSearchQuery", object:nil)
-        loadSearchResults("Thai")
+     //   self.yelpFilterParameters.setValue("Thai", forKey:"term")
+        loadSearchResults()
     }
     
     
@@ -96,24 +98,35 @@ class SearchResult {
         }
         else {
             self.searchActive = false
-            self.resignFirstResponder()
-            self.view.endEditing(true)
+            self.searchBar.resignFirstResponder()
+            //self.view.endEditing(true)
         }
-        self.searchQuery = searchText
+        self.searchQuery = createTermStringTokens(searchText)
         self.tableView!.reloadData()
     }
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         println(" searchBar searchBarSearchButtonClicked = "+searchQuery )
         self.searchActive = false
-        loadSearchResults(searchQuery)
+        
+        if(searchQuery != "")
+        {
+            self.yelpFilterParameters.setValue(searchQuery, forKey:"term")
+            // filterdata nsert("category_filter", allTags)
+        }
+        else
+        {
+            self.yelpFilterParameters.removeObjectForKey("term")
+        }
+
+        loadSearchResults()
         self.view.endEditing(true)
-         self.resignFirstResponder()
+         self.searchBar.resignFirstResponder()
     }
     
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
         self.searchActive = false
         self.view.endEditing(true)
-        searchBar.resignFirstResponder()
+        self.searchBar.resignFirstResponder()
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -201,6 +214,12 @@ class SearchResult {
         
     }
     
+    func createTermStringTokens(compositeString:NSString) ->NSString
+    {
+        //var replaceStr:NSString = compositeString.stringByReplacingOccurrencesOfString(" ", withString:",")
+        //return replaceStr
+        return compositeString
+    }
     
 func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -214,7 +233,10 @@ func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSInd
     }
     
     func searchTermDidChange (searchData:NSDictionary) {
-        self.loadSearchResults("Thai")
+        self.loadSearchResults()
+        
+        yelpFilterParameters.addEntriesFromDictionary(searchData)
+        
     }
 
 }

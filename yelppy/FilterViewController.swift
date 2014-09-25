@@ -15,7 +15,7 @@ protocol FilterViewControllerDelegate {
 class FilterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var tableView: UITableView!
-    
+    var filterData:NSMutableDictionary = [:]
     
     var delegate: FilterViewControllerDelegate!
     var categories: [NSDictionary]  =
@@ -60,6 +60,7 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
     var mostPopularExpanded: Bool = false
     
     var categoryCodes: [String] = ["active", "arts", "auto", "beautysvc", "bicycles", "education", "eventservices"]
+    var distanceCodes: [Int] = [-1, 250, 750, 1610, 8050]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -252,26 +253,77 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
         println("onTapBack received")
         dismissViewControllerAnimated(true, completion: nil)
     }
+   
+
+    @IBAction func onTapSearch(sender: UIButton) {
+        saveCategoryFilter(self.categoryCodes, searchCurrentState: self.categoriesStates, searchKey: "category_filter")
+        saveMostPopularORSortFilters(self.mostPopularStates, searchKey: "deals_filter")
+        saveDistanceFilters(self.distanceCodes, searchCurrentState: self.distanceStates, searchKey: "radius_filter")
+        saveMostPopularORSortFilters(self.sortByStates, searchKey: "sort")
+        
+        delegate!.searchTermDidChange(filterData)
+        dismissViewControllerAnimated(true, completion: nil)
+    }
     
-  func saveFilters()
+  func saveCategoryFilter(searchCodes:NSArray, searchCurrentState:NSArray, searchKey:String)
   {
    // let catagories = categoryCodes["categories"] as NSArray?
     var allTags: String = ""
-    for var index = 0; index < self.categoryCodes.count; ++index {
-        if( categoriesStates[index] == true)
+    for var index = 0; index < searchCodes.count; ++index {
+        if( searchCurrentState[index] as Bool == true)
         {
             if(allTags != "")
             {
             allTags += ", "
             }
-            allTags += categoryCodes[index]
+            allTags += searchCodes[index] as String
         }
     }
-    var filterData:NSDictionary!
+    
     if(allTags != "")
     {
-        filterData.setValue(allTags, forKey:"category_filter")
+        self.filterData.setValue(allTags, forKey:searchKey)
        // filterdata nsert("category_filter", allTags)
     }
+    else
+    {
+        if(self.filterData.objectForKey(searchKey) != nil )
+        {
+            self.filterData.removeObjectForKey(searchKey)
+        }
+    }
+    
+    
 }
+    
+    func saveMostPopularORSortFilters(searchCurrentState:NSArray, searchKey:String)
+    {
+        for var index = 0; index < searchCurrentState.count; ++index {
+            if( searchCurrentState[index] as Bool == true)
+            {
+                self.filterData.setValue(searchCurrentState[index] as Bool, forKey:searchKey)
+                return
+            }
+            if(self.filterData.objectForKey(searchKey) != nil )
+            {
+                self.filterData.removeObjectForKey(searchKey)
+            }
+        }
+    }
+
+    func saveDistanceFilters(searchCodes:NSArray,searchCurrentState:NSArray, searchKey:String)
+    {
+        for var index = 0; index < searchCodes.count; ++index {
+            if( searchCurrentState[index] as Bool == true)
+            {
+                self.filterData.setValue(searchCodes[index] as Int, forKey:searchKey)
+                return
+            }
+            if(self.filterData.objectForKey(searchKey) != nil )
+            {
+                self.filterData.removeObjectForKey(searchKey)
+            }
+        }
+    }
+
 }
