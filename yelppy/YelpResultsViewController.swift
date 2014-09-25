@@ -229,6 +229,7 @@ func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSInd
         var filtersNavigationController = segue.destinationViewController as UINavigationController
         
         var filterviewController = filtersNavigationController.viewControllers[0] as FilterViewController
+        filterviewController.filterData = self.yelpFilterParameters
         filterviewController.delegate = self
     }
     
