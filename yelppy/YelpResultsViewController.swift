@@ -25,8 +25,8 @@ class SearchResult {
     var neighborhood: String! }
 
 
- class YelpResultsViewController: UIViewController,  UITableViewDelegate,  UITableViewDataSource, UISearchDisplayDelegate, UISearchBarDelegate, FilterViewControllerDelegate     {
-
+class YelpResultsViewController: UIViewController,  UITableViewDelegate,  UITableViewDataSource, UISearchDisplayDelegate, UISearchBarDelegate, FilterViewControllerDelegate     {
+    
     @IBOutlet weak var tableView: UITableView!
     var client: YelpClient!
     
@@ -48,21 +48,21 @@ class SearchResult {
         client = YelpClient(consumerKey: yelpConsumerKey, consumerSecret: yelpConsumerSecret, accessToken: yelpToken, accessSecret: yelpTokenSecret)
         
         client.searchWild(yelpFilterParameters, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-            println(response)
+            //    println(response)
             
             self.yelpDict = response["businesses"] as [NSDictionary]
-            println("list of businesses = \(self.yelpDict.count)")
+            //        println("list of businesses = \(self.yelpDict.count)")
             self.tableView.reloadData()
             
             }) { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
                 println(error)
         }
-
+        
     }
-
+    
     
     @IBAction func onTap(sender: AnyObject) {
-    println(" onTap ")
+        println(" onTap ")
         //    view.endEditing(true)
         self.searchBar.resignFirstResponder()
     }
@@ -70,7 +70,7 @@ class SearchResult {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.whiteColor()
@@ -82,11 +82,11 @@ class SearchResult {
         navigationController?.navigationBar.barTintColor =  UIColor(red: 1.0, green:0.0, blue:0.0 , alpha:1.0)
         self.searchBar = UISearchBar(frame:CGRectMake(50, 0, 100, 40))
         self.searchBar!.delegate = self
-     //   self.searchBar.
+        //   self.searchBar.
         self.navigationItem.titleView = self.searchBar!
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "searchQuery:", name: "yelpSearchQuery", object:nil)
-     //   self.yelpFilterParameters.setValue("Thai", forKey:"term")
+        //   self.yelpFilterParameters.setValue("Thai", forKey:"term")
         loadSearchResults()
     }
     
@@ -117,10 +117,10 @@ class SearchResult {
         {
             self.yelpFilterParameters.removeObjectForKey("term")
         }
-
+        
         loadSearchResults()
         self.view.endEditing(true)
-         self.searchBar.resignFirstResponder()
+        self.searchBar.resignFirstResponder()
     }
     
     func searchBarCancelButtonClicked(searchBar: UISearchBar) {
@@ -133,15 +133,15 @@ class SearchResult {
         // Dispose of any resources that can be recreated.
     }
     
-
-
+    
+    
     /*
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    // Get the new view controller using segue.destinationViewController.
+    // Pass the selected object to the new view controller.
     }
     */
     
@@ -150,11 +150,11 @@ class SearchResult {
     {
         if (yelpDict.count == 0)
         {
-        return 0;
+            return 0;
         }
         else
         {
-        return yelpDict.count
+            return yelpDict.count
         }
     }
     
@@ -179,7 +179,7 @@ class SearchResult {
         
         if(yelpImage != nil)
         {
-        cell.businessImage.setImageWithURL(NSURL(string: yelpImage!))
+            cell.businessImage.setImageWithURL(NSURL(string: yelpImage!))
         }
         
         
@@ -187,9 +187,9 @@ class SearchResult {
         var locationString =  yelpListing["location"] as NSDictionary
         var addString = locationString["display_address"] as NSArray?
         var displayAddress = addString![0] as String
-       cell.businessAddress.text = displayAddress
+        cell.businessAddress.text = displayAddress
         cell.businessReviews.text = "\(reviewCount) reviews"
-       
+        
         let catagories = yelpListing["categories"] as NSArray?
         var allTags: String = ""
         if catagories?.count > 0 {
@@ -203,13 +203,6 @@ class SearchResult {
         }
         cell.businessCategory.text = allTags
         
-        
-       
-        
- //       var categoryStr = (yelpListing["categories"] as NSDictionary)[0][0] as String;
-        
-        //@IBOutlet weak var categoryLabel: UILabel!
-        
         return cell
         
     }
@@ -218,13 +211,13 @@ class SearchResult {
     {
         var replaceStr:NSString = compositeString.stringByReplacingOccurrencesOfString(" ", withString:",")
         return replaceStr
-      //  return compositeString
+        //  return compositeString
     }
     
-func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
+    func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
-   
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         var filtersNavigationController = segue.destinationViewController as UINavigationController
         
@@ -234,11 +227,10 @@ func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSInd
     }
     
     func searchTermDidChange (searchData:NSMutableDictionary) {
+        self.yelpFilterParameters = searchData
         self.loadSearchResults()
         
-        //self.yelpFilterParameters.addEntriesFromDictionary(searchData)
-        self.yelpFilterParameters = searchData
         
     }
-
+    
 }
