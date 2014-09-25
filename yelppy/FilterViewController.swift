@@ -9,7 +9,7 @@
 import UIKit
 
 protocol FilterViewControllerDelegate {
-    func searchTermDidChange (searchdata:NSDictionary)
+    func searchTermDidChange (searchdata:NSMutableDictionary)
 }
 
 class FilterViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {

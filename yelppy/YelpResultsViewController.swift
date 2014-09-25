@@ -233,10 +233,11 @@ func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSInd
         filterviewController.delegate = self
     }
     
-    func searchTermDidChange (searchData:NSDictionary) {
+    func searchTermDidChange (searchData:NSMutableDictionary) {
         self.loadSearchResults()
         
-        yelpFilterParameters.addEntriesFromDictionary(searchData)
+        //self.yelpFilterParameters.addEntriesFromDictionary(searchData)
+        self.yelpFilterParameters = searchData
         
     }
 
