@@ -34,18 +34,18 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
         [
             "name":"Distance",
             "type":"expandable",
-            "list":["Auto","2 blocks","6 blocks","1 mile","5 miles"]
+            "list":["Auto","2 blocks","6 blocks","1 mile","5 miles", "See more"]
         ],
         [
             "name":"Sort By",
             "type":"expandable",
             //   "list":["Best Match","Distance","Rating","Most Reviewed"]
-            "list":["Best Match","Distance","Rating"]
+            "list":["Best Match","Distance","Rating", "See more"]
         ],
         [
             "name":"Categories",
             "type":"switches",
-            "list":["Active Live","Arts & Entertainment","Automotive","Beauty & Spas","Bicycles", "Education","Event Planning & Services"]
+            "list":["Active Live","Arts & Entertainment","Automotive","Beauty & Spas","Bicycles", "Education","Event Planning & Services", "See more"]
         ]
     ]
     
@@ -54,18 +54,18 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
     //   var mostPopularStates: [Bool] = [false, false, false, false]
     var mostPopularStates: [Bool] = [false]
     var priceStates: [Int] = [0]
-    var distanceStates: [Bool] = [true, false, false, false, false]
+    var distanceStates: [Bool] = [true, false, false, false, false, false]
     // var sortByStates: [Bool] = [true, false, false, false]
-    var sortByStates: [Bool] = [true, false, false]
-    var categoriesStates: [Bool] = [false, false, false, false, false, false, false];
+    var sortByStates: [Bool] = [true, false, false, false]
+    var categoriesStates: [Bool] = [false, false, false, false, false, false, false, false];
     var sortByExpanded: Bool = false
     var distanceExpanded: Bool = false
     var categoriesExpanded: Bool = false
     var mostPopularExpanded: Bool = false
     
-    var sortByCodes: [Int] = [0, 1, 2]
-    var categoryCodes: [String] = ["active", "arts", "auto", "beautysvc", "bicycles", "education", "eventservices"]
-    var distanceCodes: [Int] = [-1, 250, 750, 1610, 8050]
+    var sortByCodes: [Int] = [0, 1, 2, -1]
+    var categoryCodes: [String] = ["active", "arts", "auto", "beautysvc", "bicycles", "education", "eventservices", "see-more"]
+    var distanceCodes: [Int] = [-1, 250, 750, 1610, 8050, -1]
     var mostPopularCodes: [String] = ["deals_filter"]
     
     override func viewDidLoad() {
@@ -126,7 +126,7 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
             } else {
                 var count = (self.categories[section]["list"] as NSArray).count
                 //         println(" numberOfRowsInSection Categories count = \(count)")
-                return (self.categories[section]["list"] as NSArray).count
+                return (self.categories[section]["list"] as NSArray).count - 1
             }
         }
         else if (sectionName == "Distance")
@@ -139,7 +139,7 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
             } else {
                 var count = (self.categories[section]["list"] as NSArray).count
                 //           println(" numberOfRowsInSection Distance count = \(count)")
-                return (self.categories[section]["list"] as NSArray).count
+                return (self.categories[section]["list"] as NSArray).count - 1
             }
         }
         else if (sectionName == "Sort By")
@@ -152,7 +152,7 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
             } else {
                 var count = (self.categories[section]["list"] as NSArray).count
                 //              println(" numberOfRowsInSection Sort By count = \(count)")
-                return (self.categories[section]["list"] as NSArray).count
+                return (self.categories[section]["list"] as NSArray).count - 1
             }
         }
         else if (sectionName == "Most Popular")
@@ -200,13 +200,42 @@ class FilterViewController: UIViewController, UITableViewDataSource, UITableView
                 println(" before cellForRowAtIndexPath setting self.mostPopularStates[indexPath.row]  = \(self.mostPopularStates[indexPath.row]) and cell.filterSwitch.on = \(cell.filterSwitch.on)")
                 cell.filterSwitch.on = self.mostPopularStates[indexPath.row]
                 println(" after cellForRowAtIndexPath setting self.mostPopularStates[indexPath.row]  = \(self.mostPopularStates[indexPath.row]) and cell.filterSwitch.on = \(cell.filterSwitch.on)")
+                
             } else if((self.categories[indexPath.section]["name"] as? String) == "Distance"){
+                if(self.distanceExpanded)
+                {
                 cell.filterSwitch.on = self.distanceStates[indexPath.row]
+                cell.filterSwitch.hidden = false
+                }
+                else
+                {
+                    cell.filterLabel.text = list[list.count - 1] as? String
+                    cell.filterSwitch.hidden = true
+                }
             } else if((self.categories[indexPath.section]["name"] as? String) == "Sort By"){
+                if(self.sortByExpanded)
+                {
                 cell.filterSwitch.on = self.sortByStates[indexPath.row]
+                cell.filterSwitch.hidden = false
+                }
+                else
+                {
+                    cell.filterLabel.text = list[list.count - 1] as? String
+                    cell.filterSwitch.hidden = true
+                }
                 
             } else {
+                if(self.categoriesExpanded)
+                {
                 cell.filterSwitch.on = self.categoriesStates[indexPath.row]
+                cell.filterSwitch.hidden = false
+                }
+                else
+                {
+                    cell.filterLabel.text = list[list.count - 1] as? String
+                    cell.filterSwitch.hidden = true
+                }
+
                 
             }
             return cell;
