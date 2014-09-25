@@ -216,9 +216,9 @@ class SearchResult {
     
     func createTermStringTokens(compositeString:NSString) ->NSString
     {
-        //var replaceStr:NSString = compositeString.stringByReplacingOccurrencesOfString(" ", withString:",")
-        //return replaceStr
-        return compositeString
+        var replaceStr:NSString = compositeString.stringByReplacingOccurrencesOfString(" ", withString:",")
+        return replaceStr
+      //  return compositeString
     }
     
 func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
